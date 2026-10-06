@@ -21,12 +21,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -39,24 +41,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bookbazaar.app.ui.components.PageHeading
-import com.bookbazaar.app.ui.theme.AccentCoral
-import com.bookbazaar.app.ui.theme.CardBorder
-import com.bookbazaar.app.ui.theme.CreamBackground
-import com.bookbazaar.app.ui.theme.CreamSurface
-import com.bookbazaar.app.ui.theme.ForestPrimary
+import com.bookbazaar.app.ui.theme.BorderCard
+import com.bookbazaar.app.ui.theme.CardSurfaceSubtle
+import com.bookbazaar.app.ui.theme.CardWhite
+import com.bookbazaar.app.ui.theme.DmSansFontFamily
+import com.bookbazaar.app.ui.theme.ForestBrand
 import com.bookbazaar.app.ui.theme.ForestTitle
-import com.bookbazaar.app.ui.theme.TextDark
+import com.bookbazaar.app.ui.theme.PaperBackground
+import com.bookbazaar.app.ui.theme.PlayfairDisplayFontFamily
+import com.bookbazaar.app.ui.theme.StatusDeliveredBg
+import com.bookbazaar.app.ui.theme.StatusDeliveredText
+import com.bookbazaar.app.ui.theme.TerracottaAccent
+import com.bookbazaar.app.ui.theme.TerracottaLightBg
 import com.bookbazaar.app.ui.theme.TextMuted
-import com.bookbazaar.app.viewmodel.BookBazaarViewModel
 
 @Composable
 fun ProfileScreen(
-    viewModel: BookBazaarViewModel,
+    viewModel: com.bookbazaar.app.viewmodel.BookBazaarViewModel,
     onNavigateToOrders: () -> Unit,
     onNavigateToCart: () -> Unit,
     onSignOut: () -> Unit
@@ -69,104 +74,299 @@ fun ProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CreamBackground)
+            .background(PaperBackground)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp)
             .padding(bottom = 32.dp)
     ) {
         PageHeading(
-            kicker = "YOUR BOOK BAZAAR",
-            title = "A little about you.",
-            text = "Your account, your orders, your school-year essentials."
+            kicker = "ACCOUNT & SETTINGS",
+            title = "Your profile.",
+            text = "Manage your student profiles, addresses, and reading preferences."
         )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Profile Card
-        Row(
+        // User Summary Card (.user-card from Stitch screen_4_profile)
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp))
-                .background(CreamSurface)
-                .border(1.dp, CardBorder, RoundedCornerShape(18.dp))
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .background(CardWhite)
+                .border(1.dp, BorderCard, RoundedCornerShape(18.dp))
+                .padding(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFFE5DECE)),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = (user.firstName.take(1).ifBlank { "D" }).uppercase(),
-                    fontSize = 22.sp,
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    color = ForestTitle
-                )
+                // Large initial avatar
+                Box(
+                    modifier = Modifier
+                        .size(54.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFE3ECE6))
+                        .border(1.dp, Color(0xFFC8DACF), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = (user.firstName.take(1).ifBlank { "B" }).uppercase(),
+                        fontSize = 22.sp,
+                        fontFamily = PlayfairDisplayFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = ForestTitle
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = user.fullName.ifBlank { "Bhavya Sharma" },
+                            fontSize = 16.sp,
+                            fontFamily = DmSansFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = ForestTitle
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(Color(0xFFE7F0EB))
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "Parent",
+                                fontFamily = DmSansFontFamily,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = ForestBrand
+                            )
+                        }
+                    }
+                    Text(
+                        text = "+91 98765 43210",
+                        fontFamily = DmSansFontFamily,
+                        fontSize = 12.sp,
+                        color = TextMuted
+                    )
+                    Text(
+                        text = user.email.ifBlank { "bhavya.sharma@example.com" },
+                        fontFamily = DmSansFontFamily,
+                        fontSize = 12.sp,
+                        color = TextMuted
+                    )
+                }
+
+                // Edit button in terracotta
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .clickable { }
+                        .padding(horizontal = 6.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit",
+                        tint = TerracottaAccent,
+                        modifier = Modifier.size(13.dp)
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text(
+                        text = "Edit",
+                        fontFamily = DmSansFontFamily,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = TerracottaAccent
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFF0EBDF)))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
+            // Linked students row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Text(
-                    text = "SIGNED IN AS",
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = ForestPrimary,
-                    letterSpacing = 1.sp
-                )
-                Text(
-                    text = user.fullName,
-                    fontSize = 17.sp,
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    color = TextDark
-                )
-                Text(
-                    text = user.email.ifBlank { "reader@bookbazaar.in" },
-                    fontSize = 12.sp,
+                    text = "Linked students:",
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 11.sp,
                     color = TextMuted
                 )
-            }
-
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(CreamBackground)
-                    .border(1.dp, CardBorder, RoundedCornerShape(12.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Shield,
-                        contentDescription = null,
-                        tint = ForestPrimary,
-                        modifier = Modifier.size(12.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color(0xFFF5F1E8))
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
                     Text(
-                        text = "Verified",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = ForestPrimary
+                        text = "• Aarav (Class 5)",
+                        fontFamily = DmSansFontFamily,
+                        fontSize = 11.sp,
+                        color = ForestTitle,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color(0xFFF5F1E8))
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        text = "• Ananya (Class 2)",
+                        fontFamily = DmSansFontFamily,
+                        fontSize = 11.sp,
+                        color = ForestTitle,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        // Action rows
+        // Student Profiles Section from Stitch
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "STUDENT PROFILES (2)",
+                fontFamily = DmSansFontFamily,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = ForestBrand,
+                letterSpacing = 1.sp
+            )
+            Text(
+                text = "+ Add Student",
+                fontFamily = DmSansFontFamily,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = ForestBrand
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Student Profile Card 1 (Aarav)
+        StudentProfileCard(
+            initials = "AS",
+            name = "Aarav Sharma",
+            gradeDetail = "Class 5 • Section B • Roll #14",
+            school = "Delhi Public School, R.K. Puram",
+            booklistAction = "View CBSE Class 5 Booklist",
+            bookCountLabel = "14 books assigned"
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Student Profile Card 2 (Ananya)
+        StudentProfileCard(
+            initials = "AS",
+            name = "Ananya Sharma",
+            gradeDetail = "Class 2 • Section A • Roll #07",
+            school = "Delhi Public School, R.K. Puram",
+            booklistAction = "View Primary Class 2 Booklist",
+            bookCountLabel = "8 books assigned",
+            isTerracottaInitials = true
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Orders & Payments Section from Stitch
+        Text(
+            text = "ORDERS & PAYMENTS",
+            fontFamily = DmSansFontFamily,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = ForestBrand,
+            letterSpacing = 1.sp
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Wallet & Credits Card
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(CardWhite)
+                .border(1.dp, BorderCard, RoundedCornerShape(16.dp))
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Color(0xFFF9EDE8)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AccountBalanceWallet,
+                    contentDescription = null,
+                    tint = TerracottaAccent,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "BookBazaar Wallet & Credits",
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = ForestTitle
+                )
+                Text(
+                    text = "Available cashbacks and gift cards",
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 11.sp,
+                    color = TextMuted
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFE5EDE7))
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = "₹250",
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = ForestBrand
+                )
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = TextMuted,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Action rows container (Orders, Cart, Sign Out)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp))
-                .background(CreamSurface)
-                .border(1.dp, CardBorder, RoundedCornerShape(18.dp))
+                .background(CardWhite)
+                .border(1.dp, BorderCard, RoundedCornerShape(18.dp))
         ) {
             ProfileActionRow(
                 icon = Icons.AutoMirrored.Filled.Assignment,
@@ -175,7 +375,12 @@ fun ProfileScreen(
                 onClick = onNavigateToOrders
             )
 
-            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(CardBorder))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(BorderCard)
+            )
 
             ProfileActionRow(
                 icon = Icons.Default.ShoppingBag,
@@ -184,7 +389,12 @@ fun ProfileScreen(
                 onClick = onNavigateToCart
             )
 
-            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(CardBorder))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(BorderCard)
+            )
 
             ProfileActionRow(
                 icon = Icons.AutoMirrored.Filled.Logout,
@@ -205,36 +415,39 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(CreamSurface)
-                .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
+                .background(CardWhite)
+                .border(1.dp, BorderCard, RoundedCornerShape(16.dp))
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.HelpOutline,
                 contentDescription = null,
-                tint = ForestPrimary,
+                tint = ForestBrand,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Need a hand?",
+                    fontFamily = DmSansFontFamily,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextDark
+                    color = ForestTitle
                 )
                 Text(
                     text = "We’re happy to help with your order or book list.",
+                    fontFamily = DmSansFontFamily,
                     fontSize = 11.sp,
                     color = TextMuted
                 )
             }
             Text(
                 text = "Get in touch →",
+                fontFamily = DmSansFontFamily,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = ForestPrimary,
+                color = ForestBrand,
                 modifier = Modifier.clickable {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("mailto:hello@bookbazaar.in")
@@ -242,9 +455,151 @@ fun ProfileScreen(
                     try {
                         context.startActivity(intent)
                     } catch (e: Exception) {
-                        // ignore if no mail app
+                        // ignore if no mail client
                     }
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun StudentProfileCard(
+    initials: String,
+    name: String,
+    gradeDetail: String,
+    school: String,
+    booklistAction: String,
+    bookCountLabel: String,
+    isTerracottaInitials: Boolean = false
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(CardWhite)
+            .border(1.dp, BorderCard, RoundedCornerShape(16.dp))
+            .padding(14.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(if (isTerracottaInitials) Color(0xFFF7ECE6) else Color(0xFFE2EBE5)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = initials,
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isTerracottaInitials) TerracottaAccent else ForestBrand
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = name,
+                        fontFamily = DmSansFontFamily,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = ForestTitle
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(Color(0xFFE7F0EB))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "Active",
+                            fontFamily = DmSansFontFamily,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = ForestBrand
+                        )
+                    }
+                }
+                Text(
+                    text = gradeDetail,
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 11.sp,
+                    color = TextMuted
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // School affiliation box
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFFF9F6EE))
+                .padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.School,
+                    contentDescription = null,
+                    tint = Color(0xFFB57E3E),
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = school,
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 11.sp,
+                    color = ForestTitle
+                )
+            }
+            Text(
+                text = "Synced",
+                fontFamily = DmSansFontFamily,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = ForestBrand
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Booklist footer
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = booklistAction,
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TerracottaAccent
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = TerracottaAccent,
+                    modifier = Modifier.size(12.dp)
+                )
+            }
+            Text(
+                text = bookCountLabel,
+                fontFamily = DmSansFontFamily,
+                fontSize = 10.sp,
+                color = TextMuted
             )
         }
     }
@@ -269,13 +624,13 @@ fun ProfileActionRow(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
-                .background(if (isDestructive) AccentCoral.copy(alpha = 0.1f) else CreamBackground),
+                .background(if (isDestructive) TerracottaLightBg else CardSurfaceSubtle),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = if (isDestructive) AccentCoral else ForestPrimary,
+                tint = if (isDestructive) TerracottaAccent else ForestBrand,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -285,12 +640,14 @@ fun ProfileActionRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
+                fontFamily = DmSansFontFamily,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (isDestructive) AccentCoral else TextDark
+                color = if (isDestructive) TerracottaAccent else ForestTitle
             )
             Text(
                 text = subtitle,
+                fontFamily = DmSansFontFamily,
                 fontSize = 11.sp,
                 color = TextMuted
             )

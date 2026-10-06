@@ -27,7 +27,7 @@ import com.bookbazaar.app.ui.screens.SearchScreen
 import com.bookbazaar.app.ui.screens.ShopScreen
 import com.bookbazaar.app.ui.screens.SignInScreen
 import com.bookbazaar.app.ui.screens.SignUpScreen
-import com.bookbazaar.app.ui.theme.CreamBackground
+import com.bookbazaar.app.ui.theme.PaperBackground
 import com.bookbazaar.app.viewmodel.BookBazaarViewModel
 
 @Composable
@@ -84,13 +84,13 @@ fun BookBazaarApp(
                 )
             }
         },
-        containerColor = CreamBackground
+        containerColor = PaperBackground
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(CreamBackground)
+                .background(PaperBackground)
         ) {
             NavHost(
                 navController = navController,

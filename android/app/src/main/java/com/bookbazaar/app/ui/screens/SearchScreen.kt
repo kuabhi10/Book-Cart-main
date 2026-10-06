@@ -21,17 +21,18 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,21 +45,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bookbazaar.app.ui.components.BookCard
 import com.bookbazaar.app.ui.components.EmptyState
+import com.bookbazaar.app.ui.components.HorizontalBookCard
 import com.bookbazaar.app.ui.components.PageHeading
 import com.bookbazaar.app.ui.theme.BorderCard
-import com.bookbazaar.app.ui.theme.BorderInput
 import com.bookbazaar.app.ui.theme.CardWhite
 import com.bookbazaar.app.ui.theme.DmSansFontFamily
 import com.bookbazaar.app.ui.theme.ForestBrand
 import com.bookbazaar.app.ui.theme.ForestTitle
 import com.bookbazaar.app.ui.theme.PaperBackground
-import com.bookbazaar.app.ui.theme.PlayfairDisplayFontFamily
 import com.bookbazaar.app.ui.theme.TerracottaAccent
 import com.bookbazaar.app.ui.theme.TextMuted
 import com.bookbazaar.app.viewmodel.BookBazaarViewModel
@@ -81,16 +81,16 @@ fun SearchScreen(
     var subjectMenuExpanded by remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(1),
         modifier = Modifier
             .fillMaxSize()
-            .background(PaperBackground),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+            .background(PaperBackground)
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Page Heading
-        item(span = { GridItemSpan(2) }) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        item {
+            Column {
                 PageHeading(
                     kicker = "YOUR NEXT GREAT FIND",
                     title = "Find the right books.",
@@ -98,72 +98,106 @@ fun SearchScreen(
                     trailingContent = {
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(20.dp))
                                 .background(CardWhite)
-                                .border(1.dp, BorderCard, RoundedCornerShape(12.dp))
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                                .border(1.dp, BorderCard, RoundedCornerShape(20.dp))
+                                .padding(horizontal = 10.dp, vertical = 5.dp)
                         ) {
                             Text(
                                 text = "${books.size} titles",
                                 fontFamily = DmSansFontFamily,
                                 fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = ForestBrand
+                                fontWeight = FontWeight.Normal,
+                                color = ForestTitle
                             )
                         }
                     }
                 )
 
-                // Search Bar input matching web .search-form
-                OutlinedTextField(
-                    value = query,
-                    onValueChange = { viewModel.searchQuery.value = it },
-                    placeholder = {
-                        Text(
-                            text = "Try ‘Mathematics’ or an author name",
+                // Search Bar pill matching Stitch screen_5_search
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(28.dp))
+                        .background(Color.White)
+                        .border(1.dp, Color(0xFFE4DFD3), RoundedCornerShape(28.dp))
+                        .padding(start = 14.dp, top = 5.dp, bottom = 5.dp, end = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = TextMuted,
+                        modifier = Modifier.size(19.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    BasicTextField(
+                        value = query,
+                        onValueChange = { viewModel.searchQuery.value = it },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+                        textStyle = TextStyle(
                             fontFamily = DmSansFontFamily,
-                            color = TextMuted,
-                            fontSize = 13.sp
-                        )
-                    },
-                    leadingIcon = {
+                            fontSize = 13.sp,
+                            color = ForestTitle
+                        ),
+                        decorationBox = { innerTextField ->
+                            if (query.isEmpty()) {
+                                Text(
+                                    text = "Try “Mathematics” or an author name",
+                                    fontFamily = DmSansFontFamily,
+                                    fontSize = 12.sp,
+                                    color = TextMuted
+                                )
+                            }
+                            innerTextField()
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    if (query.isNotEmpty()) {
                         Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = ForestBrand,
-                            modifier = Modifier.size(20.dp)
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = "Clear",
+                            tint = TextMuted,
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clickable { viewModel.searchQuery.value = "" }
                         )
-                    },
-                    trailingIcon = {
-                        if (query.isNotBlank()) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(ForestBrand)
+                            .clickable { focusManager.clearFocus() }
+                            .padding(horizontal = 14.dp, vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Search",
+                                fontFamily = DmSansFontFamily,
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
                             Icon(
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "Clear",
-                                tint = TextMuted,
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .clickable { viewModel.searchQuery.value = "" }
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(13.dp)
                             )
                         }
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = CardWhite,
-                        unfocusedContainerColor = CardWhite,
-                        focusedBorderColor = ForestBrand,
-                        unfocusedBorderColor = BorderInput,
-                        focusedTextColor = ForestTitle,
-                        unfocusedTextColor = ForestTitle
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    }
+                }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                // Filter row: Class dropdown, Subject dropdown, Clear filters
+                // Filter row: FILTER BY, Class selector, Subject selector, Clear filters
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -173,38 +207,46 @@ fun SearchScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = Icons.Default.FilterList,
+                            imageVector = Icons.Default.Tune,
                             contentDescription = null,
-                            tint = ForestBrand,
-                            modifier = Modifier.size(14.dp)
+                            tint = TextMuted,
+                            modifier = Modifier.size(15.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "FILTER BY",
                             fontFamily = DmSansFontFamily,
-                            fontSize = 9.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            color = ForestBrand,
+                            color = TextMuted,
                             letterSpacing = 0.8.sp
                         )
                     }
 
-                    // Class Dropdown Filter
+                    // Class Dropdown Selector
                     Box {
-                        Box(
+                        Row(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(if (searchClass != null) ForestBrand else CardWhite)
-                                .border(1.dp, if (searchClass != null) ForestBrand else BorderCard, RoundedCornerShape(12.dp))
+                                .background(CardWhite)
+                                .border(1.dp, if (searchClass != null) ForestBrand else Color(0xFFE4DFD3), RoundedCornerShape(12.dp))
                                 .clickable { classMenuExpanded = true }
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                                .padding(horizontal = 12.dp, vertical = 7.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 text = if (searchClass != null) "Class $searchClass" else "All classes",
                                 fontFamily = DmSansFontFamily,
-                                color = if (searchClass != null) Color.White else ForestTitle,
+                                color = if (searchClass != null) ForestBrand else ForestTitle,
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.Medium
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = TextMuted,
+                                modifier = Modifier.size(14.dp)
                             )
                         }
                         DropdownMenu(
@@ -230,22 +272,30 @@ fun SearchScreen(
                         }
                     }
 
-                    // Subject Dropdown Filter
+                    // Subject Dropdown Selector
                     Box {
-                        Box(
+                        Row(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(if (searchSubject.isNotBlank()) ForestBrand else CardWhite)
-                                .border(1.dp, if (searchSubject.isNotBlank()) ForestBrand else BorderCard, RoundedCornerShape(12.dp))
+                                .background(CardWhite)
+                                .border(1.dp, if (searchSubject.isNotBlank()) ForestBrand else Color(0xFFE4DFD3), RoundedCornerShape(12.dp))
                                 .clickable { subjectMenuExpanded = true }
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                                .padding(horizontal = 12.dp, vertical = 7.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 text = if (searchSubject.isNotBlank()) searchSubject else "All subjects",
                                 fontFamily = DmSansFontFamily,
-                                color = if (searchSubject.isNotBlank()) Color.White else ForestTitle,
+                                color = if (searchSubject.isNotBlank()) ForestBrand else ForestTitle,
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.Medium
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = TextMuted,
+                                modifier = Modifier.size(14.dp)
                             )
                         }
                         DropdownMenu(
@@ -271,14 +321,14 @@ fun SearchScreen(
                         }
                     }
 
-                    // Clear Filters Button (.clear-filters terracotta)
+                    // Clear Filters Link in Terracotta
                     if (query.isNotBlank() || searchClass != null || searchSubject.isNotBlank()) {
                         Text(
                             text = "Clear filters",
                             fontFamily = DmSansFontFamily,
                             color = TerracottaAccent,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Medium,
                             modifier = Modifier
                                 .clickable { viewModel.clearSearchFilters() }
                                 .padding(horizontal = 6.dp, vertical = 4.dp)
@@ -288,9 +338,9 @@ fun SearchScreen(
             }
         }
 
-        // Search Results Grid
+        // Search Results List (Horizontal Cards matching Stitch)
         if (books.isEmpty()) {
-            item(span = { GridItemSpan(2) }) {
+            item {
                 EmptyState(
                     title = "Nothing on this shelf.",
                     text = "Try a shorter search or clear a filter to see more books.",
@@ -300,20 +350,18 @@ fun SearchScreen(
             }
         } else {
             items(books, key = { it.id }) { book ->
-                Box(modifier = Modifier.padding(start = 16.dp, end = 4.dp)) {
-                    BookCard(
-                        book = book,
-                        isFavorite = savedIds.contains(book.id),
-                        isAdding = addingBookId == book.id,
-                        isAdded = addedBookId == book.id,
-                        onAddToCart = { viewModel.addToCart(book) },
-                        onToggleFavorite = { viewModel.toggleFavorite(book.id) }
-                    )
-                }
+                HorizontalBookCard(
+                    book = book,
+                    isFavorite = savedIds.contains(book.id),
+                    isAdding = addingBookId == book.id,
+                    isAdded = addedBookId == book.id,
+                    onAddToCart = { viewModel.addToCart(book) },
+                    onToggleFavorite = { viewModel.toggleFavorite(book.id) }
+                )
             }
         }
 
-        item(span = { GridItemSpan(2) }) {
+        item {
             Spacer(modifier = Modifier.height(24.dp))
         }
     }

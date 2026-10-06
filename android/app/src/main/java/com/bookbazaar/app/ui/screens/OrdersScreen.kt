@@ -22,12 +22,12 @@ import androidx.compose.material.icons.filled.NorthEast
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -36,18 +36,18 @@ import com.bookbazaar.app.model.Order
 import com.bookbazaar.app.ui.components.EmptyState
 import com.bookbazaar.app.ui.components.PageHeading
 import com.bookbazaar.app.ui.components.StatusPill
-import com.bookbazaar.app.ui.theme.CardBorder
-import com.bookbazaar.app.ui.theme.CreamBackground
-import com.bookbazaar.app.ui.theme.CreamSurface
-import com.bookbazaar.app.ui.theme.ForestPrimary
+import com.bookbazaar.app.ui.theme.BorderCard
+import com.bookbazaar.app.ui.theme.CardWhite
+import com.bookbazaar.app.ui.theme.DmSansFontFamily
+import com.bookbazaar.app.ui.theme.ForestBrand
 import com.bookbazaar.app.ui.theme.ForestTitle
-import com.bookbazaar.app.ui.theme.TextDark
+import com.bookbazaar.app.ui.theme.PaperBackground
+import com.bookbazaar.app.ui.theme.PlayfairDisplayFontFamily
 import com.bookbazaar.app.ui.theme.TextMuted
-import com.bookbazaar.app.viewmodel.BookBazaarViewModel
 
 @Composable
 fun OrdersScreen(
-    viewModel: BookBazaarViewModel,
+    viewModel: com.bookbazaar.app.viewmodel.BookBazaarViewModel,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToShop: () -> Unit
 ) {
@@ -56,7 +56,7 @@ fun OrdersScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(CreamBackground)
+            .background(PaperBackground)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
@@ -101,8 +101,8 @@ fun OrderCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(CreamSurface)
-            .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
+            .background(CardWhite)
+            .border(1.dp, BorderCard, RoundedCornerShape(16.dp))
             .clickable { onClick() }
             .padding(16.dp)
     ) {
@@ -117,6 +117,7 @@ fun OrderCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = order.createdAt.take(10),
+                    fontFamily = DmSansFontFamily,
                     fontSize = 12.sp,
                     color = TextMuted
                 )
@@ -124,7 +125,7 @@ fun OrderCard(
                 Icon(
                     imageVector = Icons.Default.NorthEast,
                     contentDescription = "View Details",
-                    tint = ForestPrimary,
+                    tint = ForestBrand,
                     modifier = Modifier.size(14.dp)
                 )
             }
@@ -132,33 +133,82 @@ fun OrderCard(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Items preview
+        // Items preview with thumbnail covers
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Box(
+                modifier = Modifier
+                    .size(width = 52.dp, height = 48.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 30.dp, height = 44.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(Color(0xFF1E3E34))
+                        .border(1.dp, Color(0xFF2D5A4C), RoundedCornerShape(4.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "A",
+                        fontSize = 9.sp,
+                        color = Color(0xFFE8D7B5),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                if (order.items.size > 1) {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 18.dp)
+                            .size(width = 30.dp, height = 44.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(Color(0xFF233549))
+                            .border(1.dp, Color(0xFF3A4D62), RoundedCornerShape(4.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "B",
+                            fontSize = 9.sp,
+                            color = Color(0xFFC0D2E5),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
             Column(modifier = Modifier.weight(1f)) {
                 val firstTitle = order.items.firstOrNull()?.title ?: "School book"
                 val extraCount = (order.items.size - 1).coerceAtLeast(0)
                 Text(
                     text = if (extraCount > 0) "$firstTitle + $extraCount more" else firstTitle,
                     fontSize = 14.sp,
-                    fontFamily = FontFamily.Serif,
+                    fontFamily = PlayfairDisplayFontFamily,
                     fontWeight = FontWeight.Bold,
-                    color = TextDark,
+                    color = ForestTitle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "${order.itemCount} books · Cash on delivery",
-                    fontSize = 12.sp,
+                    text = "${order.itemCount} ${if (order.itemCount == 1) "book" else "books"} · Cash on delivery",
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 11.sp,
                     color = TextMuted
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(CardBorder))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(BorderCard)
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
         // Foot: Order ID and Total
@@ -169,12 +219,14 @@ fun OrderCard(
         ) {
             Text(
                 text = "Order #${order.id.takeLast(8).uppercase()}",
+                fontFamily = DmSansFontFamily,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = TextMuted
             )
             Text(
                 text = "₹${order.total}",
+                fontFamily = PlayfairDisplayFontFamily,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = ForestTitle

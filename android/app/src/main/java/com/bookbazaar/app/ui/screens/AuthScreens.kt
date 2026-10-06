@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,25 +39,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bookbazaar.app.ui.components.BrandLogo
-import com.bookbazaar.app.ui.theme.CardBorder
-import com.bookbazaar.app.ui.theme.CreamBackground
-import com.bookbazaar.app.ui.theme.CreamSurface
-import com.bookbazaar.app.ui.theme.ForestPrimary
+import com.bookbazaar.app.ui.theme.BorderCard
+import com.bookbazaar.app.ui.theme.CardWhite
+import com.bookbazaar.app.ui.theme.DmSansFontFamily
+import com.bookbazaar.app.ui.theme.ForestBrand
 import com.bookbazaar.app.ui.theme.ForestTitle
-import com.bookbazaar.app.ui.theme.TextDark
+import com.bookbazaar.app.ui.theme.PaperBackground
+import com.bookbazaar.app.ui.theme.PlayfairDisplayFontFamily
 import com.bookbazaar.app.ui.theme.TextMuted
-import com.bookbazaar.app.viewmodel.BookBazaarViewModel
 
 @Composable
 fun SignInScreen(
-    viewModel: BookBazaarViewModel,
+    viewModel: com.bookbazaar.app.viewmodel.BookBazaarViewModel,
     onSuccess: () -> Unit,
     onNavigateToSignUp: () -> Unit
 ) {
@@ -66,7 +66,8 @@ fun SignInScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CreamBackground)
+            .background(PaperBackground)
+            .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -75,34 +76,36 @@ fun SignInScreen(
         BrandLogo()
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Aside message box matching web auth-aside
+        // Aside message box matching web .auth-aside
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(CreamSurface)
-                .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
+                .background(CardWhite)
+                .border(1.dp, BorderCard, RoundedCornerShape(16.dp))
                 .padding(20.dp)
         ) {
             Text(
                 text = "WELCOME BACK",
+                fontFamily = DmSansFontFamily,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
-                color = ForestPrimary,
+                color = ForestBrand,
                 letterSpacing = 1.2.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "All the right books for a year of big ideas.",
-                fontSize = 18.sp,
-                fontFamily = FontFamily.Serif,
+                fontSize = 19.sp,
+                fontFamily = PlayfairDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
-                color = TextDark,
-                lineHeight = 24.sp
+                color = ForestTitle,
+                lineHeight = 25.sp
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "Thoughtfully selected for every classroom, from Class 1 to 12.",
+                fontFamily = DmSansFontFamily,
                 fontSize = 12.sp,
                 color = TextMuted,
                 lineHeight = 16.sp
@@ -113,20 +116,25 @@ fun SignInScreen(
 
         // Form Fields
         val textFieldColors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = CreamSurface,
-            unfocusedContainerColor = CreamSurface,
-            focusedBorderColor = ForestPrimary,
-            unfocusedBorderColor = CardBorder,
-            focusedTextColor = TextDark,
-            unfocusedTextColor = TextDark
+            focusedContainerColor = Color(0xFFFBF8EF),
+            unfocusedContainerColor = Color(0xFFFBF8EF),
+            focusedBorderColor = ForestBrand,
+            unfocusedBorderColor = Color(0xFFD8D1C1),
+            focusedTextColor = ForestTitle,
+            unfocusedTextColor = ForestTitle
         )
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email address") },
+            label = { Text("Email address", fontFamily = DmSansFontFamily) },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Email, contentDescription = null, tint = ForestPrimary, modifier = Modifier.size(18.dp))
+                Icon(
+                    imageVector = Icons.Default.Email,
+                    contentDescription = null,
+                    tint = ForestBrand,
+                    modifier = Modifier.size(18.dp)
+                )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             singleLine = true,
@@ -140,9 +148,14 @@ fun SignInScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text("Password", fontFamily = DmSansFontFamily) },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Lock, contentDescription = null, tint = ForestPrimary, modifier = Modifier.size(18.dp))
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = null,
+                    tint = ForestBrand,
+                    modifier = Modifier.size(18.dp)
+                )
             },
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true,
@@ -158,18 +171,26 @@ fun SignInScreen(
                 viewModel.signIn("Demo Reader", email)
                 onSuccess()
             },
-            colors = ButtonDefaults.buttonColors(containerColor = ForestPrimary),
+            colors = ButtonDefaults.buttonColors(containerColor = ForestBrand),
             shape = RoundedCornerShape(14.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
             Text(
                 text = "Sign in",
+                fontFamily = DmSansFontFamily,
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.width(6.dp))
-            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -178,12 +199,18 @@ fun SignInScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Don't have an account? ", fontSize = 13.sp, color = TextMuted)
+            Text(
+                text = "Don't have an account? ",
+                fontFamily = DmSansFontFamily,
+                fontSize = 13.sp,
+                color = TextMuted
+            )
             Text(
                 text = "Sign up",
+                fontFamily = DmSansFontFamily,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = ForestPrimary,
+                color = ForestBrand,
                 modifier = Modifier.clickable { onNavigateToSignUp() }
             )
         }
@@ -192,7 +219,7 @@ fun SignInScreen(
 
 @Composable
 fun SignUpScreen(
-    viewModel: BookBazaarViewModel,
+    viewModel: com.bookbazaar.app.viewmodel.BookBazaarViewModel,
     onSuccess: () -> Unit,
     onNavigateToSignIn: () -> Unit
 ) {
@@ -203,7 +230,8 @@ fun SignUpScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CreamBackground)
+            .background(PaperBackground)
+            .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -212,34 +240,36 @@ fun SignUpScreen(
         BrandLogo()
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Aside message box matching web auth-aside
+        // Aside message box matching web .auth-aside
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(CreamSurface)
-                .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
+                .background(CardWhite)
+                .border(1.dp, BorderCard, RoundedCornerShape(16.dp))
                 .padding(20.dp)
         ) {
             Text(
                 text = "JOIN BOOK BAZAAR",
+                fontFamily = DmSansFontFamily,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
-                color = ForestPrimary,
+                color = ForestBrand,
                 letterSpacing = 1.2.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "A fresh chapter starts right here.",
-                fontSize = 18.sp,
-                fontFamily = FontFamily.Serif,
+                fontSize = 19.sp,
+                fontFamily = PlayfairDisplayFontFamily,
                 fontWeight = FontWeight.Bold,
-                color = TextDark,
-                lineHeight = 24.sp
+                color = ForestTitle,
+                lineHeight = 25.sp
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "Join families making school shopping a little simpler.",
+                fontFamily = DmSansFontFamily,
                 fontSize = 12.sp,
                 color = TextMuted,
                 lineHeight = 16.sp
@@ -249,20 +279,25 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         val textFieldColors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = CreamSurface,
-            unfocusedContainerColor = CreamSurface,
-            focusedBorderColor = ForestPrimary,
-            unfocusedBorderColor = CardBorder,
-            focusedTextColor = TextDark,
-            unfocusedTextColor = TextDark
+            focusedContainerColor = Color(0xFFFBF8EF),
+            unfocusedContainerColor = Color(0xFFFBF8EF),
+            focusedBorderColor = ForestBrand,
+            unfocusedBorderColor = Color(0xFFD8D1C1),
+            focusedTextColor = ForestTitle,
+            unfocusedTextColor = ForestTitle
         )
 
         OutlinedTextField(
             value = fullName,
             onValueChange = { fullName = it },
-            label = { Text("Full name") },
+            label = { Text("Full name", fontFamily = DmSansFontFamily) },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = ForestPrimary, modifier = Modifier.size(18.dp))
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    tint = ForestBrand,
+                    modifier = Modifier.size(18.dp)
+                )
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
@@ -275,9 +310,14 @@ fun SignUpScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email address") },
+            label = { Text("Email address", fontFamily = DmSansFontFamily) },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Email, contentDescription = null, tint = ForestPrimary, modifier = Modifier.size(18.dp))
+                Icon(
+                    imageVector = Icons.Default.Email,
+                    contentDescription = null,
+                    tint = ForestBrand,
+                    modifier = Modifier.size(18.dp)
+                )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             singleLine = true,
@@ -291,9 +331,14 @@ fun SignUpScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text("Password", fontFamily = DmSansFontFamily) },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Lock, contentDescription = null, tint = ForestPrimary, modifier = Modifier.size(18.dp))
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = null,
+                    tint = ForestBrand,
+                    modifier = Modifier.size(18.dp)
+                )
             },
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true,
@@ -311,18 +356,26 @@ fun SignUpScreen(
                 viewModel.signIn(name, em)
                 onSuccess()
             },
-            colors = ButtonDefaults.buttonColors(containerColor = ForestPrimary),
+            colors = ButtonDefaults.buttonColors(containerColor = ForestBrand),
             shape = RoundedCornerShape(14.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
             Text(
                 text = "Create account",
+                fontFamily = DmSansFontFamily,
                 color = Color.White,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.width(6.dp))
-            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -331,12 +384,18 @@ fun SignUpScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Already have an account? ", fontSize = 13.sp, color = TextMuted)
+            Text(
+                text = "Already have an account? ",
+                fontFamily = DmSansFontFamily,
+                fontSize = 13.sp,
+                color = TextMuted
+            )
             Text(
                 text = "Sign in",
+                fontFamily = DmSansFontFamily,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = ForestPrimary,
+                color = ForestBrand,
                 modifier = Modifier.clickable { onNavigateToSignIn() }
             )
         }

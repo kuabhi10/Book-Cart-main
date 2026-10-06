@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Icon
@@ -42,9 +42,6 @@ import com.bookbazaar.app.ui.theme.PaperBackground
 import com.bookbazaar.app.ui.theme.PlayfairDisplayFontFamily
 import com.bookbazaar.app.ui.theme.TerracottaAccent
 import com.bookbazaar.app.ui.theme.TerracottaBadge
-import com.bookbazaar.app.ui.theme.TextBody
-import com.bookbazaar.app.ui.theme.TextLight
-import com.bookbazaar.app.ui.theme.TextMuted
 
 @Composable
 fun BrandLogo(
@@ -58,11 +55,11 @@ fun BrandLogo(
             if (onClick != null) Modifier.clickable { onClick() } else Modifier
         )
     ) {
-        // Asymmetric leaf border radius: 13px 13px 13px 4px from web stylesheet
+        // Asymmetric leaf badge (13px 13px 13px 4px) matching Stitch & web stylesheet
         Box(
             modifier = Modifier
-                .size(if (compact) 35.dp else 39.dp)
-                .clip(RoundedCornerShape(topStart = 13.dp, topEnd = 13.dp, bottomEnd = 13.dp, bottomStart = 4.dp))
+                .size(if (compact) 34.dp else 39.dp)
+                .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomEnd = 12.dp, bottomStart = 4.dp))
                 .background(ForestBrand),
             contentAlignment = Alignment.Center
         ) {
@@ -74,14 +71,14 @@ fun BrandLogo(
             )
         }
 
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
         Column {
             Text(
                 text = buildAnnotatedString {
                     withStyle(
                         SpanStyle(
-                            color = Color(0xFF264C3B),
+                            color = ForestTitle,
                             fontFamily = DmSansFontFamily,
                             fontWeight = FontWeight.Bold
                         )
@@ -100,18 +97,20 @@ fun BrandLogo(
                 },
                 fontSize = if (compact) 19.sp else 21.sp,
                 fontWeight = FontWeight.Bold,
-                letterSpacing = (-0.8).sp,
+                letterSpacing = (-0.6).sp,
                 lineHeight = 20.sp
             )
-            Text(
-                text = "THE SCHOOL BOOKSHOP",
-                fontFamily = DmSansFontFamily,
-                fontSize = 7.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF78867B),
-                letterSpacing = 1.1.sp,
-                lineHeight = 9.sp
-            )
+            if (!compact) {
+                Text(
+                    text = "THE SCHOOL BOOKSHOP",
+                    fontFamily = DmSansFontFamily,
+                    fontSize = 7.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF78867B),
+                    letterSpacing = 1.1.sp,
+                    lineHeight = 9.sp
+                )
+            }
         }
     }
 }
@@ -126,123 +125,111 @@ fun AppHeader(
     onProfileClick: () -> Unit,
     onDeliveryClick: (() -> Unit)? = null
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFFBF9F2))
-            .border(width = 1.dp, color = Color(0xFFEAE5D9))
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .background(PaperBackground)
+            .statusBarsPadding()
     ) {
-        BrandLogo(
-            compact = true,
-            onClick = onLogoClick
-        )
-
-        // Location / Delivery Pill matching .header-location
         Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(PaperBackground)
-                .border(1.dp, Color(0xFFE8E2D5), RoundedCornerShape(12.dp))
-                .clickable { onDeliveryClick?.invoke() }
-                .padding(horizontal = 9.dp, vertical = 5.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Place,
-                contentDescription = "Location",
-                tint = TerracottaAccent,
-                modifier = Modifier.size(15.dp)
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            Column {
-                Text(
-                    text = "DELIVERY DETAILS",
-                    fontFamily = DmSansFontFamily,
-                    fontSize = 7.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = TextLight,
-                    letterSpacing = 0.7.sp
-                )
-                Text(
-                    text = "Confirm at checkout",
-                    fontFamily = DmSansFontFamily,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF314F3F)
-                )
-            }
-            Spacer(modifier = Modifier.width(4.dp))
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                tint = TextLight,
-                modifier = Modifier.size(14.dp)
-            )
-        }
-
-        Row(
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Cart button matching .header-cart (40px with border and terracotta badge)
-            Box(
-                modifier = Modifier
-                    .size(38.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Transparent)
-                    .border(1.dp, Color(0xFFE8E2D5), RoundedCornerShape(12.dp))
-                    .clickable { onCartClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingBag,
-                    contentDescription = "Shopping Bag",
-                    tint = Color(0xFF345844),
-                    modifier = Modifier.size(20.dp)
-                )
+            BrandLogo(
+                compact = true,
+                onClick = onLogoClick
+            )
 
-                if (cartCount > 0) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(top = 2.dp, end = 2.dp)
-                            .size(17.dp)
-                            .clip(CircleShape)
-                            .background(TerracottaBadge)
-                            .border(1.5.dp, Color(0xFFFBF9F2), CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = if (cartCount > 99) "99+" else cartCount.toString(),
-                            fontFamily = DmSansFontFamily,
-                            color = Color.White,
-                            fontSize = 8.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+            // Right Action Icons: Location Pin, Shopping Bag with Badge, User Avatar (matching Stitch)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                // Location Pin button
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .clickable { onDeliveryClick?.invoke() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Place,
+                        contentDescription = "Location",
+                        tint = TerracottaAccent,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Shopping Bag button with Terracotta notification badge
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(11.dp))
+                        .background(Color.White.copy(alpha = 0.7f))
+                        .border(1.dp, BorderCard, RoundedCornerShape(11.dp))
+                        .clickable { onCartClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingBag,
+                        contentDescription = "Shopping Bag",
+                        tint = ForestBrand,
+                        modifier = Modifier.size(19.dp)
+                    )
+
+                    if (cartCount > 0) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(top = 1.dp, end = 1.dp)
+                                .size(16.dp)
+                                .clip(CircleShape)
+                                .background(TerracottaBadge)
+                                .border(1.dp, CardWhite, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = if (cartCount > 99) "99+" else cartCount.toString(),
+                                fontFamily = DmSansFontFamily,
+                                color = Color.White,
+                                fontSize = 8.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
-            }
 
-            // Profile Avatar matching .header-avatar
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFFE5EADF))
-                    .clickable { onProfileClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (isSignedIn) userInitial.uppercase() else "P",
-                    fontFamily = PlayfairDisplayFontFamily,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF365A45)
-                )
+                // Profile Avatar Initial Pill
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFE0E7DC))
+                        .border(1.dp, Color(0xFFCCD6C8), CircleShape)
+                        .clickable { onProfileClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (isSignedIn) userInitial.uppercase().ifBlank { "B" } else "B",
+                        fontFamily = PlayfairDisplayFontFamily,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = ForestTitle
+                    )
+                }
             }
         }
+
+        // Bottom border line matching Stitch border-cream-200
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(Color(0xFFEAE5D9))
+        )
     }
 }

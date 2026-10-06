@@ -108,7 +108,7 @@ fun ShopScreen(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "School-ready",
+                        text = "A better school year starts here",
                         fontFamily = DmSansFontFamily,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Medium,
